@@ -127,7 +127,16 @@ uvicorn main:app --host 0.0.0.0 --port 8001
 ```
 
 **Triggering an Incident (Dry Run)**
-You can simulate a Pub/Sub alert to test the live flow:
+You can simulate a Pub/Sub alert to test the flow:
+
+*Option A: Test Local Server*
+```bash
+curl -s -X POST http://127.0.0.1:8001/api/trigger/pubsub \
+  -H "Content-Type: application/json" \
+  -d '{"service": "auth-service", "severity": "HIGH", "alert_name": "OOMKiller", "error_log": "Memory usage exceeded 95%"}'
+```
+
+*Option B: Test Live Cloud Run Deployment*
 ```bash
 curl -s -X POST https://sre-manager-dashboard-647203809707.us-east1.run.app/api/trigger/pubsub \
   -H "Content-Type: application/json" \
@@ -162,8 +171,9 @@ The FastAPI Dashboard (`http://127.0.0.1:8001/`) provides a clean SRE interface:
 
 ## 8. Future Enhancements
 
+*   **Live ChatOps Integration**: Currently, the egress node uses a mock webhook. A primary enhancement is wiring this directly to a live Google Chat or Slack API to alert the team. Once connected, a stretch goal is enabling *Two-Way ChatOps*, allowing SREs to "Approve" or "Decline" mitigation plans directly inside their chat client.
+*   **Enterprise Knowledge Retrieval (MCP)**: Replace the mocked internal runbook database with a **Model Context Protocol (MCP)** server. This would allow the Reasoning Engine to securely and dynamically query live enterprise documentation (e.g., Confluence, Notion, or Google Drive) during an active incident.
 *   **Advanced Data Loss Prevention (DLP)**: Swap our Regex-based PII scrubber for the official Google Cloud DLP API to catch more complex edge cases across different locales.
-*   **Cloud Run Deployment**: Containerize the `sre-dashboard` using Docker and deploy it to Google Cloud Run for high availability.
 *   **Telemetry Integration**: Connect the agent to live Datadog or Prometheus APIs so it can query current CPU/Memory metrics rather than just relying on the static error log provided in the alert.
 
 ---
