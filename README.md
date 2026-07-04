@@ -1,5 +1,6 @@
-# Hackathon Project: SRE Incident Approval & Resolution Agent
+# Incident Reasoning Engine
 
+**An SRE AI Autopilot for Automated Incident Triage & Resolution**
 ## 1. Project Overview & Key Features
 
 This project demonstrates an **Automated Incident Management and Resolution pipeline** leveraging Google's Agent Development Kit (ADK) and GCP Reasoning Engines. It acts as an intelligent layer between alerting systems (like Google Cloud Operations or Datadog) and SRE teams, automating the initial triage, investigation, and mitigation planning while keeping a human firmly in the loop.
@@ -39,26 +40,33 @@ graph TD
 
     %% Backend
     subgraph Backend [backend-incident-agent / Reasoning Engine]
-        B -.->|Async Stream| D[Agent Workflow]
-        D --> E[Security Checkpoint<br>PII Scrub & Injection Check]
-        E --> F{Severity Routing}
+        B -.->|Async Stream| D[parse_incident]
         
-        F -->|High| G[Investigator Agent]
-        G -->|Search| H[(Mock Runbooks)]
-        G --> I[adk_request_input<br>Wait for Human]
+        D -->|Low Severity| E[auto_mitigate]
+        D -->|High Severity| F[security_checkpoint]
+        
+        F -->|Flagged Injection| G[human_approval]
+        F -->|Pass (PII Scrubbed)| H[investigator_agent]
+        
+        H -->|Search| I[(Mock Runbooks)]
+        H -->|Track Anomalies| J[(Firestore)]
+        
+        H --> K[router_checkpoint]
+        K -->|Low Risk Plan| E
+        K -->|High Risk Plan| G
         
         %% HITL Loop
-        I -.->|Pause & Wait| C
-        C -.->|Resume Session| I
+        G -.->|adk_request_input| C
+        C -.->|Resume Session| G
     end
 
     %% Dynamic Learning
-    G -->|Track Anomalies| J[(Firestore)]
-    J -->|Count >= 3| K[(GCS Bucket <br>New Meta-Skill)]
+    J -->|Count >= 3| L[(GCS Bucket <br>New Meta-Skill)]
 
     %% Egress
-    I --> L[Execute Mitigation]
-    L --> M[Google Chat Webhook]
+    E --> M[run_mitigation]
+    G --> M
+    M --> N[notification_node<br>Google Chat Webhook]
 ```
 
 The system is split into a robust backend agent and a sleek frontend control plane:
