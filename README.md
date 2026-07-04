@@ -30,7 +30,7 @@ Modern SRE teams face massive alert fatigue and spend critical minutes during ou
 ```mermaid
 graph TD
     %% External Triggers
-    A[Alert Source <br>e.g., Cloud Ops/Datadog] -->|Pub/Sub Push| B(SRE Dashboard<br>FastAPI)
+    A[Alert Source: Cloud Ops/Datadog] -->|Pub/Sub Push| B(SRE Dashboard: FastAPI)
 
     %% Frontend
     subgraph Frontend [sre-dashboard]
@@ -46,7 +46,7 @@ graph TD
         D -->|High Severity| F[security_checkpoint]
         
         F -->|Flagged Injection| G[human_approval]
-        F -->|Pass (PII Scrubbed)| H[investigator_agent]
+        F -->|Pass - PII Scrubbed| H[investigator_agent]
         
         H -->|Search| I[(Mock Runbooks)]
         H -->|Track Anomalies| J[(Firestore)]
@@ -61,12 +61,12 @@ graph TD
     end
 
     %% Dynamic Learning
-    J -->|Count >= 3| L[(GCS Bucket <br>New Meta-Skill)]
+    J -->|Count >= 3| L[(GCS Bucket: New Meta-Skill)]
 
     %% Egress
     E --> M[run_mitigation]
     G --> M
-    M --> N[notification_node<br>Google Chat Webhook]
+    M --> N[notification_node: Google Chat Webhook]
 ```
 
 The system is split into a robust backend agent and a sleek frontend control plane:
