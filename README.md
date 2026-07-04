@@ -94,8 +94,8 @@ The system is split into a robust backend agent and a sleek frontend control pla
 
 *   **`sre-dashboard/` (Frontend):** A FastAPI application running on Uvicorn. It acts as the primary ingress by exposing a webhook endpoint (`/api/trigger/pubsub`) to receive **Google Cloud Pub/Sub push subscriptions**. It exposes a UI powered by HTML/JS that connects to the backend via Server-Sent Events (SSE) for real-time updates without polling. It also acts as the orchestrator for the `VertexAiSessionService`.
 *   **Data & Storage:** 
-    *   **Firestore**: Tracks anomaly counts for the Meta-Skills system and handles mock sessions for local testing.
-    *   **Google Cloud Storage (GCS)**: Stores the dynamically generated Markdown runbooks.
+    *   **[Firestore](https://cloud.google.com/firestore)**: Tracks anomaly counts for the Meta-Skills system and handles mock sessions for local testing.
+    *   **[Google Cloud Storage (GCS)](https://cloud.google.com/storage)**: Stores the dynamically generated Markdown runbooks.
 *   **Event Driven:** Ingestion happens via POST to `/api/trigger/pubsub`, which proxies requests down to the Reasoning Engine using asynchronous streaming execution (`stream_query_reasoning_engine`).
 
 ---
@@ -127,9 +127,9 @@ uvicorn main:app --host 0.0.0.0 --port 8001
 ```
 
 **Triggering an Incident (Dry Run)**
-You can simulate a Pub/Sub alert locally to test the flow:
+You can simulate a Pub/Sub alert to test the live flow:
 ```bash
-curl -s -X POST http://127.0.0.1:8001/api/trigger/pubsub \
+curl -s -X POST https://sre-manager-dashboard-647203809707.us-east1.run.app/api/trigger/pubsub \
   -H "Content-Type: application/json" \
   -d '{"service": "auth-service", "severity": "HIGH", "alert_name": "OOMKiller", "error_log": "Memory usage exceeded 95%"}'
 ```
