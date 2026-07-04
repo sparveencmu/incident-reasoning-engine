@@ -69,9 +69,17 @@ graph TD
     M --> N[notification_node: Google Chat Webhook]
 ```
 
+### System Design Deep Dive
+
+Our architecture relies on several core design principles designed specifically for a modern, high-stress SRE environment:
+
+1. **Event-Driven Decoupling (Pub/Sub Ingress)**: Rather than having the AI poll for metrics, the entire system is push-based. The `sre-dashboard` exposes a webhook (`/api/trigger/pubsub`) that acts as a secure target for Google Cloud Pub/Sub push subscriptions. This ensures alerts are never dropped during high-load spikes and separates the ingestion layer from the heavy LLM reasoning layer.
+2. **Real-time UX (Server-Sent Events)**: To keep SREs from manually refreshing dashboards during an outage, the frontend subscribes to the FastAPI server using SSE. As soon as the Reasoning Engine hits the `adk_request_input` pause state, the dashboard updates instantly.
+3. **Defense-in-Depth (LLM vs Determinism)**: We do not rely on the LLM to make routing decisions. Instead, we use the ADK 2.0 Graph Workflow to deterministically route traffic (e.g. low severity alerts skip the LLM entirely). The LLM is only invoked where it excels: parsing unstructured logs and generating mitigation plans.
+
 The system is split into a robust backend agent and a sleek frontend control plane:
 
-*   **`backend-incident-agent/` (Reasoning Engine):** Built with Python and the Google Agent Development Kit (ADK). It defines a Graph Workflow (`Workflow`, `LlmAgent`, `App`) that handles state management. Deployed securely to GCP Vertex AI Reasoning Engines.
+*   **`backend-incident-agent/` (Reasoning Engine):** Built with Python and the Google Agent Development Kit (ADK). It utilizes the **ADK 2.0 Graph Workflow API** to wire together a deterministic state machine using explicit nodes and edges (`Workflow`, `LlmAgent`, `App`). It relies on ADK's `RequestInput` events to securely pause execution for the Human-in-the-Loop step. Deployed securely to GCP Vertex AI Reasoning Engines.
     ```text
     backend-incident-agent/
     ├── app/         # Core agent code
@@ -84,8 +92,7 @@ The system is split into a robust backend agent and a sleek frontend control pla
     ```
     > 💡 **Tip:** Use [Gemini CLI](https://github.com/google-gemini/gemini-cli) for AI-assisted development - project context is pre-configured in `GEMINI.md`.
 
-*   **`sre-dashboard/` (Frontend):** A FastAPI application running on Uvicorn. It exposes a UI powered by HTML/JS that connects to the backend via Server-Sent Events (SSE). It acts as the orchestrator for the `VertexAiSessionService`.
-
+*   **`sre-dashboard/` (Frontend):** A FastAPI application running on Uvicorn. It acts as the primary ingress by exposing a webhook endpoint (`/api/trigger/pubsub`) to receive **Google Cloud Pub/Sub push subscriptions**. It exposes a UI powered by HTML/JS that connects to the backend via Server-Sent Events (SSE) for real-time updates without polling. It also acts as the orchestrator for the `VertexAiSessionService`.
 *   **Data & Storage:** 
     *   **Firestore**: Tracks anomaly counts for the Meta-Skills system and handles mock sessions for local testing.
     *   **Google Cloud Storage (GCS)**: Stores the dynamically generated Markdown runbooks.
