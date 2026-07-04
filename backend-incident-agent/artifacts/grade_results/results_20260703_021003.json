@@ -1,0 +1,222 @@
+{
+  "eval_case_results": [
+    {
+      "eval_case_index": 0,
+      "response_candidate_results": [
+        {
+          "response_index": 0,
+          "metric_results": {
+            "custom_response_quality": {
+              "metric_name": "custom_response_quality",
+              "score": 4.0,
+              "explanation": "The response is accurate, well-structured, and effectively summarizes the incident and its auto-mitigation, drawing correct information from the user prompt and the agent trace. It clearly identifies the service, alert, status, and the specific mitigation actions taken, which is highly relevant information for an 'On-Call Notification'. The formatting is excellent and easy to read. \n\nThe only minor area for improvement is the omission of the 'severity' (LOW) which was present in the initial user prompt and also in the first turn of the agent's trace. While the incident is reported as mitigated, including the initial severity would have made the summary slightly more comprehensive without adding clutter. However, this is a minor detail that does not significantly detract from the overall quality and utility of the response.",
+              "rubric_verdicts": null,
+              "raw_output": null,
+              "error_message": null
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "summary_metrics": [
+    {
+      "metric_name": "custom_response_quality",
+      "num_cases_total": 1,
+      "num_cases_valid": 1,
+      "num_cases_error": 0,
+      "mean_score": 4.0,
+      "stdev_score": null,
+      "pass_rate": null
+    }
+  ],
+  "win_rates": null,
+  "evaluation_dataset": [
+    {
+      "bigquery_source": null,
+      "gcs_source": null,
+      "eval_cases": [
+        {
+          "prompt": {
+            "parts": [
+              {
+                "media_resolution": null,
+                "code_execution_result": null,
+                "executable_code": null,
+                "file_data": null,
+                "function_call": null,
+                "function_response": null,
+                "inline_data": null,
+                "text": "{\"data\": {\"service\": \"cache-service\", \"severity\": \"LOW\", \"alert_name\": \"Cache key eviction warning\", \"error_log\": \"Warning: Cache memory threshold exceeded 80%\"}}",
+                "thought": null,
+                "thought_signature": null,
+                "video_metadata": null,
+                "tool_call": null,
+                "tool_response": null,
+                "part_metadata": null
+              }
+            ],
+            "role": "user"
+          },
+          "responses": [
+            {
+              "response": {
+                "parts": [
+                  {
+                    "media_resolution": null,
+                    "code_execution_result": null,
+                    "executable_code": null,
+                    "file_data": null,
+                    "function_call": null,
+                    "function_response": null,
+                    "inline_data": null,
+                    "text": "\ud83d\udea8 **On-Call Notification: Incident Summary**\n- **Service**: cache-service\n- **Alert**: Cache key eviction warning\n- **Status**: mitigated\n- **Mitigation Action**: Auto-mitigation executed: Clear safe temporary directories, flush non-essential caches, and collect diagnostic stats.\n",
+                    "thought": null,
+                    "thought_signature": null,
+                    "video_metadata": null,
+                    "tool_call": null,
+                    "tool_response": null,
+                    "part_metadata": null
+                  }
+                ],
+                "role": "model"
+              }
+            }
+          ],
+          "reference": null,
+          "system_instruction": null,
+          "conversation_history": null,
+          "rubric_groups": null,
+          "eval_case_id": "low_severity_cache_miss",
+          "intermediate_events": null,
+          "agent_info": null,
+          "agent_data": {
+            "agents": {
+              "root_agent": {
+                "agent_id": "root_agent",
+                "agent_type": "Workflow",
+                "description": "",
+                "instruction": null,
+                "tools": [],
+                "sub_agents": []
+              }
+            },
+            "turns": [
+              {
+                "turn_index": 0,
+                "turn_id": "turn_0",
+                "events": [
+                  {
+                    "author": "root_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "\u2705 **Incident Auto-Mitigated Successfully**\n\n- **Service**: cache-service\n- **Alert**: Cache key eviction warning\n- **Initial Severity**: LOW\n- **Action Executed**: Clear safe temporary directories, flush non-essential caches, and collect diagnostic stats.\n",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "root_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "\u2699\ufe0f **Mitigation Engine Execution**\n\n- **Action**: Auto-mitigation executed: Clear safe temporary directories, flush non-essential caches, and collect diagnostic stats.\n",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  },
+                  {
+                    "author": "root_agent",
+                    "content": {
+                      "parts": [
+                        {
+                          "media_resolution": null,
+                          "code_execution_result": null,
+                          "executable_code": null,
+                          "file_data": null,
+                          "function_call": null,
+                          "function_response": null,
+                          "inline_data": null,
+                          "text": "\ud83d\udea8 **On-Call Notification: Incident Summary**\n- **Service**: cache-service\n- **Alert**: Cache key eviction warning\n- **Status**: mitigated\n- **Mitigation Action**: Auto-mitigation executed: Clear safe temporary directories, flush non-essential caches, and collect diagnostic stats.\n",
+                          "thought": null,
+                          "thought_signature": null,
+                          "video_metadata": null,
+                          "tool_call": null,
+                          "tool_response": null,
+                          "part_metadata": null
+                        }
+                      ],
+                      "role": "model"
+                    },
+                    "event_time": null,
+                    "state_delta": null,
+                    "active_tools": null
+                  }
+                ]
+              }
+            ]
+          },
+          "user_scenario": null
+        }
+      ],
+      "eval_dataset_df": null,
+      "candidate_name": null
+    }
+  ],
+  "metadata": {
+    "candidate_names": [
+      "candidate_1"
+    ],
+    "dataset_name": null,
+    "dataset_id": null,
+    "creation_timestamp": "2026-07-03T06:10:03.877485Z",
+    "dataset": [
+      {
+        "prompt_display_text": "{\"data\": {\"service\": \"cache-service\", \"severity\": \"LOW\", \"alert_name\": \"Cache key eviction warning\", \"error_log\": \"Warning: Cache memory threshold exceeded 80%\"}}",
+        "prompt_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"{\\\"data\\\": {\\\"service\\\": \\\"cache-service\\\", \\\"severity\\\": \\\"LOW\\\", \\\"alert_name\\\": \\\"Cache key eviction warning\\\", \\\"error_log\\\": \\\"Warning: Cache memory threshold exceeded 80%\\\"}}\"\n    }\n  ],\n  \"role\": \"user\"\n}",
+        "reference": "",
+        "reference_raw_json": "",
+        "response_display_text": "\ud83d\udea8 **On-Call Notification: Incident Summary**\n- **Service**: cache-service\n- **Alert**: Cache key eviction warning\n- **Status**: mitigated\n- **Mitigation Action**: Auto-mitigation executed: Clear safe temporary directories, flush non-essential caches, and collect diagnostic stats.\n",
+        "response_raw_json": "{\n  \"parts\": [\n    {\n      \"text\": \"\ud83d\udea8 **On-Call Notification: Incident Summary**\\n- **Service**: cache-service\\n- **Alert**: Cache key eviction warning\\n- **Status**: mitigated\\n- **Mitigation Action**: Auto-mitigation executed: Clear safe temporary directories, flush non-essential caches, and collect diagnostic stats.\\n\"\n    }\n  ],\n  \"role\": \"model\"\n}",
+        "intermediate_events": null,
+        "agent_data": "{\"agents\": {\"root_agent\": {\"agent_id\": \"root_agent\", \"agent_type\": \"Workflow\", \"description\": \"\", \"tools\": [], \"sub_agents\": []}}, \"turns\": [{\"turn_index\": 0, \"turn_id\": \"turn_0\", \"events\": [{\"author\": \"root_agent\", \"content\": {\"parts\": [{\"text\": \"\u2705 **Incident Auto-Mitigated Successfully**\\n\\n- **Service**: cache-service\\n- **Alert**: Cache key eviction warning\\n- **Initial Severity**: LOW\\n- **Action Executed**: Clear safe temporary directories, flush non-essential caches, and collect diagnostic stats.\\n\"}], \"role\": \"model\"}}, {\"author\": \"root_agent\", \"content\": {\"parts\": [{\"text\": \"\u2699\ufe0f **Mitigation Engine Execution**\\n\\n- **Action**: Auto-mitigation executed: Clear safe temporary directories, flush non-essential caches, and collect diagnostic stats.\\n\"}], \"role\": \"model\"}}, {\"author\": \"root_agent\", \"content\": {\"parts\": [{\"text\": \"\ud83d\udea8 **On-Call Notification: Incident Summary**\\n- **Service**: cache-service\\n- **Alert**: Cache key eviction warning\\n- **Status**: mitigated\\n- **Mitigation Action**: Auto-mitigation executed: Clear safe temporary directories, flush non-essential caches, and collect diagnostic stats.\\n\"}], \"role\": \"model\"}}]}]}"
+      }
+    ]
+  },
+  "agent_info": null
+}

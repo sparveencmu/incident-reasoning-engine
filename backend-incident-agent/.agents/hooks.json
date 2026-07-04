@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": {
+          "toolName": "run_command"
+        },
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run python scripts/validate_commands.py"
+          }
+        ]
+      }
+    ]
+  }
+}

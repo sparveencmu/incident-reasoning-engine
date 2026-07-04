@@ -1,0 +1,79 @@
+{
+  "eval_cases": [
+    {
+      "prompt": {
+        "parts": [
+          {
+            "text": "{\"data\": {\"service\": \"cache-service\", \"severity\": \"LOW\", \"alert_name\": \"Cache key eviction warning\", \"error_log\": \"Warning: Cache memory threshold exceeded 80%\"}}"
+          }
+        ],
+        "role": "user"
+      },
+      "responses": [
+        {
+          "response": {
+            "parts": [
+              {
+                "text": "🚨 **On-Call Notification: Incident Summary**\n- **Service**: cache-service\n- **Alert**: Cache key eviction warning\n- **Status**: mitigated\n- **Mitigation Action**: Auto-mitigation executed: Clear safe temporary directories, flush non-essential caches, and collect diagnostic stats.\n"
+              }
+            ],
+            "role": "model"
+          }
+        }
+      ],
+      "eval_case_id": "low_severity_cache_miss",
+      "agent_data": {
+        "agents": {
+          "root_agent": {
+            "agent_id": "root_agent",
+            "agent_type": "Workflow",
+            "description": "",
+            "tools": [],
+            "sub_agents": []
+          }
+        },
+        "turns": [
+          {
+            "turn_index": 0,
+            "turn_id": "turn_0",
+            "events": [
+              {
+                "author": "root_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "✅ **Incident Auto-Mitigated Successfully**\n\n- **Service**: cache-service\n- **Alert**: Cache key eviction warning\n- **Initial Severity**: LOW\n- **Action Executed**: Clear safe temporary directories, flush non-essential caches, and collect diagnostic stats.\n"
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "root_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "⚙️ **Mitigation Engine Execution**\n\n- **Action**: Auto-mitigation executed: Clear safe temporary directories, flush non-essential caches, and collect diagnostic stats.\n"
+                    }
+                  ],
+                  "role": "model"
+                }
+              },
+              {
+                "author": "root_agent",
+                "content": {
+                  "parts": [
+                    {
+                      "text": "🚨 **On-Call Notification: Incident Summary**\n- **Service**: cache-service\n- **Alert**: Cache key eviction warning\n- **Status**: mitigated\n- **Mitigation Action**: Auto-mitigation executed: Clear safe temporary directories, flush non-essential caches, and collect diagnostic stats.\n"
+                    }
+                  ],
+                  "role": "model"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
