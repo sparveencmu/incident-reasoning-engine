@@ -1,6 +1,6 @@
 # Incident Reasoning Engine
 
-**An SRE AI Autopilot for Automated Incident Triage & Resolution**
+**An SRE AI Autopilot for Automated Incident Triage & Resolution with Human-in-the-Loop Safety.**
 ## 1. Project Overview & Key Features
 
 This project demonstrates an **Automated Incident Management and Resolution pipeline** leveraging Google's Agent Development Kit (ADK) and GCP Reasoning Engines. It acts as an intelligent layer between alerting systems (like Google Cloud Operations or Datadog) and SRE teams, automating the initial triage, investigation, and mitigation planning while keeping a human firmly in the loop.
@@ -16,12 +16,13 @@ This project demonstrates an **Automated Incident Management and Resolution pipe
 
 ---
 
-## 2. Why We Built This
+## 2. Design Goals
 
-Modern SRE teams face massive alert fatigue and spend critical minutes during outages just gathering context, scrubbing logs, and finding the right runbooks. We built this project to:
-1.  **Reduce Toil**: Automate the repetitive tasks of log sanitization and runbook discovery.
-2.  **Ensure Safety**: AI can't always be trusted to take down production databases. Our architecture uses a strict HITL checkpoint where the agent *must* pause execution and request human input (`adk_request_input`) before executing high-risk mitigation scripts.
-3.  **Learn Dynamically**: We wanted the system to get smarter over time by recognizing repeating unknown issues and drafting its own meta-skills for the team to review.
+This project was designed around three core principles:
+
+*   **Automate the repetitive**: Let the agent sanitize logs, correlate evidence, retrieve relevant runbooks, and prepare an incident summary so engineers can focus on decision-making instead of data gathering.
+*   **Keep humans in control**: Rather than allowing an LLM to execute production changes autonomously, every high-risk action passes through a Human-in-the-Loop (HITL) approval checkpoint before execution.
+*   **Continuously improve**: When the agent encounters unfamiliar incidents, it captures new patterns and drafts reusable meta-skills that can be reviewed and incorporated into future investigations.
 
 ---
 
