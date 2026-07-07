@@ -1,6 +1,11 @@
 # Incident Reasoning Engine
 
 **An SRE AI Autopilot for Automated Incident Triage & Resolution with Human-in-the-Loop Safety.**
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![Google Cloud](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white)
+
 ## 1. Project Overview & Key Features
 
 This project demonstrates an **Automated Incident Management and Resolution pipeline** leveraging Google's Agent Development Kit (ADK) and GCP Reasoning Engines. It acts as an intelligent layer between alerting systems (like Google Cloud Operations or Datadog) and SRE teams, automating the initial triage, investigation, and mitigation planning while keeping a human firmly in the loop.
@@ -101,7 +106,22 @@ The system is split into a robust backend agent and a sleek frontend control pla
 
 ---
 
-## 4. Quick Start & Usage
+## 4. Demo Scenario: GPU Thermal Incident
+
+**Scenario:** A GPU inference service experiences thermal degradation, causing inference latency to spike.
+
+1. Google Cloud Monitoring publishes an alert to Pub/Sub.
+2. FastAPI receives the event and forwards it to the ADK workflow.
+3. The agent classifies the incident as High Severity.
+4. Sensitive data is redacted and logs are scanned for prompt injection attempts.
+5. The investigator retrieves the GPU thermal degradation runbook and drafts a mitigation plan.
+6. Because the proposed action impacts production infrastructure, the workflow pauses using `adk_request_input`.
+7. The on-call SRE reviews the investigation in the dashboard and approves the mitigation.
+8. The workflow resumes execution, generates a post-mortem report, and broadcasts the incident summary through Google Chat.
+
+---
+
+## 5. Quick Start & Usage
 
 ### Prerequisites
 Before you begin, ensure you have:
@@ -134,19 +154,19 @@ You can simulate a Pub/Sub alert to test the flow:
 ```bash
 curl -s -X POST http://127.0.0.1:8001/api/trigger/pubsub \
   -H "Content-Type: application/json" \
-  -d '{"service": "auth-service", "severity": "HIGH", "alert_name": "OOMKiller", "error_log": "Memory usage exceeded 95%"}'
+  -d '{"service": "gpu-inference", "severity": "HIGH", "alert_name": "ThermalDegradation", "error_log": "GPU thermal throttling detected, latency spiked to 500ms"}'
 ```
 
 *Option B: Test Live Cloud Run Deployment*
 ```bash
 curl -s -X POST https://sre-manager-dashboard-647203809707.us-east1.run.app/api/trigger/pubsub \
   -H "Content-Type: application/json" \
-  -d '{"service": "auth-service", "severity": "HIGH", "alert_name": "OOMKiller", "error_log": "Memory usage exceeded 95%"}'
+  -d '{"service": "gpu-inference", "severity": "HIGH", "alert_name": "ThermalDegradation", "error_log": "GPU thermal throttling detected, latency spiked to 500ms"}'
 ```
 
 ---
 
-## 5. UI Features
+## 6. UI Features
 
 The FastAPI Dashboard (`http://127.0.0.1:8001/`) provides a clean SRE interface:
 *   **Real-time Queue**: Uses Server-Sent Events (`/api/stream/pending`) to update the UI instantly when the agent requests human approval without needing browser refreshes.
@@ -155,7 +175,7 @@ The FastAPI Dashboard (`http://127.0.0.1:8001/`) provides a clean SRE interface:
 
 ---
 
-## 6. Technical Highlights
+## 7. Technical Highlights
 
 *   **Robust JSON Fallbacks**: The Pub/Sub ingress endpoint gracefully handles unescaped quotes and falls back to plain-text payload parsing to ensure alerts are never dropped.
 *   **LLM as a Judge**: Uses `gemini-3.1-flash-lite` in the `security_checkpoint` node specifically to classify raw logs for malicious prompt injection attempts before the main reasoning engine processes them.
@@ -163,17 +183,17 @@ The FastAPI Dashboard (`http://127.0.0.1:8001/`) provides a clean SRE interface:
 
 ---
 
-## 7. Performance and Evaluation
+## 8. Performance and Evaluation
 
 *   **Automated Testing Suite**: The project boasts 11 comprehensive tests in `pytest`. This includes integration tests for the streaming query API, tests verifying PII scrubbing (ensuring SSNs and Credit Cards are caught), prompt injection flagging, and tests that mock Google Cloud Storage to verify the local fallback logic for meta-skill creation.
 *   **Low Latency Triage**: The initial severity routing and regex scrubbing take milliseconds, meaning SREs are paged instantly for high-severity issues, while the LLM takes a few extra seconds in the background to draft the mitigation plan.
 
 ---
 
-## 8. Future Enhancements
+## 9. Future Enhancements
 
 *   **Live ChatOps Integration**: Currently, the egress node uses a mock webhook. A primary enhancement is wiring this directly to a live Google Chat or Slack API to alert the team. Once connected, a stretch goal is enabling *Two-Way ChatOps*, allowing SREs to "Approve" or "Decline" mitigation plans directly inside their chat client.
-*   **Enterprise Knowledge Retrieval (MCP)**: Replace the mocked internal runbook database with a **Model Context Protocol (MCP)** server. This would allow the Reasoning Engine to securely and dynamically query live enterprise documentation (e.g., Confluence, Notion, or Google Drive) during an active incident.
+*   **Enterprise Knowledge Retrieval (RAG & MCP)**: Replace the mocked runbook repository with a live Retrieval-Augmented Generation (RAG) pipeline. By embedding enterprise documentation (Confluence, Notion) into a Vector Database (like Vertex AI Vector Search) and connecting it via the Model Context Protocol (MCP), the Reasoning Engine could perform deep semantic searches rather than brittle keyword matching.
 *   **Advanced Data Loss Prevention (DLP)**: Swap our Regex-based PII scrubber for the official Google Cloud DLP API to catch more complex edge cases across different locales.
 *   **Telemetry Integration**: Connect the agent to live Datadog or Prometheus APIs so it can query current CPU/Memory metrics rather than just relying on the static error log provided in the alert.
 

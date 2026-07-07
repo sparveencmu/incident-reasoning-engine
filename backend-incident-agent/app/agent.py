@@ -59,6 +59,8 @@ def search_runbooks(service_name: str) -> str:
         return "Runbook: http://kb.sre.internal/db-reconnect-runbook - For database lockouts or deadlocks, scale the db replica or perform a clean connection pool restart."
     elif "auth" in service:
         return "Runbook: http://kb.sre.internal/auth-token-refresh - If token validation fails, flush the token verification cache."
+    elif "gpu" in service:
+        return "Runbook: http://kb.sre.internal/gpu-thermal-degradation - For GPU thermal throttling or latency spikes, cordon the node, gracefully drain active inference requests to a healthy replica, and power-cycle the GPU cluster."
     return "Runbook: http://kb.sre.internal/default-mitigation - For standard alerts, verify container health and CPU usage, restart if memory exceeds 90%."
 
 
