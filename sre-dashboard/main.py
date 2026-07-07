@@ -1036,7 +1036,9 @@ async def serve_dashboard():
 
             grid.innerHTML = items.map((item, idx) => {
                 const badgeClass = item.incident.severity === 'CRITICAL' ? 'badge-critical' : 'badge-high';
-                const dateStr = new Date(item.timestamp).toLocaleString();
+                // Convert timestamp from seconds to milliseconds if necessary
+                const ts = (typeof item.timestamp === 'number' && item.timestamp < 1e12) ? item.timestamp * 1000 : item.timestamp;
+                const dateStr = new Date(ts).toLocaleString();
                 
                 const redactedBadges = (item.redacted_types && item.redacted_types.length > 0)
                     ? item.redacted_types.map(t => `<span class="redact-badge">${t}</span>`).join('')
